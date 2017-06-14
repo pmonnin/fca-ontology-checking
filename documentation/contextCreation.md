@@ -3,7 +3,7 @@
 ## Purpose
 
 This program builds a SOFIA context from a set of queries to select objects and their associated 
-attributes.
+attributes. Statistics are computed on this context.
 
 ## Configuration
 
@@ -72,10 +72,11 @@ select distinct ?attribute where {
 This program can be executed with:
 
 ```shell
-python contextCreation.py conf-context-creation.json context.json
+python contextCreation.py conf-context-creation.json context.json statistics.json
 ```
 
 with:
 
 * _conf-context-creation.json_: path to the configuration file -- see previous paragraphs
 * _context.json_: SOFIA context built from the configuration and the executed SPARQL queries
+* _statistics.json_: Name of the file where the statistics of the context will be stored

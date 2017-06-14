@@ -7,7 +7,7 @@ Using FCA for checking the structure of an ontology
 ### Context creation
 
 This program builds a SOFIA context from a set of queries to select objects and their associated 
-attributes.
+attributes. Statistics are computed on this context.
 
 * [Detailed documentation is available](documentation/contextCreation.md)
 * [Example of program configuration is available](examples/conf-context-creation.json)

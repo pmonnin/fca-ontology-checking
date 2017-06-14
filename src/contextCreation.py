@@ -1,9 +1,11 @@
 import sys
 
 from core.factory.ContextFactory import ContextFactory
+from core.io.StatisticsSaver import StatisticsSaver
 from core.io.ConfigurationLoader import ConfigurationLoader
 from core.io.ServerManager import ServerManager
 from core.io.SofiaBinaryContextManager import SofiaBinaryContextManager
+from core.statistics.BinaryContextStatistics import BinaryContextStatistics
 
 __author__ = "Pierre Monnin"
 
@@ -11,7 +13,7 @@ __author__ = "Pierre Monnin"
 def main():
     print("Context creation")
 
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print_usage()
 
     else:
@@ -35,15 +37,17 @@ def main():
             context_factory = ContextFactory(server_manager)
             context = context_factory.build_context(conf)
             SofiaBinaryContextManager.save_context(context, sys.argv[2])
+            StatisticsSaver.save_statistics(BinaryContextStatistics.compute_statistics(context), sys.argv[3])
 
         except KeyError as e:
             print("Error: " + str(e))
 
 
 def print_usage():
-    print("Usage: contextCreation.py conf-context-creation.json context.json")
+    print("Usage: contextCreation.py conf-context-creation.json context.json statistics.json")
     print("\tconf-context-creation.json\tJSON file containing the necessary configuration parameters")
     print("\tcontext.json\tName of the file where the generated SOFIA context will be stored")
+    print("\tstatistics.json\tName of the file where the statistics of the context will be stored")
 
 if __name__ == '__main__':
     main()
