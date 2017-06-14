@@ -7,7 +7,7 @@ attributes.
 
 ## Configuration
 
-[An configuration is available](../examples/conf-context-creation.json). It contains:
+[A configuration example is available](../examples/conf-context-creation.json). It contains:
 
 ```json
 {
