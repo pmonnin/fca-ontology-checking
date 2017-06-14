@@ -157,4 +157,4 @@ ENV/
 .nfs*
 
 .idea
-personal-queries/
+personal-*/
