@@ -12,6 +12,12 @@ attributes. Statistics are computed on this context.
 * [Detailed documentation is available](documentation/contextCreation.md)
 * [Example of program configuration is available](examples/conf-context-creation.json)
 
+### Lattice statistics
+
+TODO
+
+* [Detailed documentation is available](documentation/latticeStatistics.md)
+
 ## Dependencies
 
 * Python 3.6.1

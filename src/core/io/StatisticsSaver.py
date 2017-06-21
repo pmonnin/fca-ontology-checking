@@ -8,6 +8,6 @@ class StatisticsSaver:
         pass
 
     @staticmethod
-    def save_statistics(statistics, file):
-        with open(file, 'w') as file:
+    def save_statistics(statistics, file_path):
+        with open(file_path, 'w') as file:
             json.dump(statistics, file)

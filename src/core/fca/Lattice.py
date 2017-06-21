@@ -39,6 +39,12 @@ class Lattice:
             bisect.insort_left(self._children[a["S"]], a["D"])
             bisect.insort_left(self._parents[a["D"]], a["S"])
 
+    def get_top_index(self):
+        return self._top
+
+    def get_children(self, concept_index):
+        return list(self._children[concept_index])
+
     @staticmethod
     def __extend_list(l, index, element, default_element):
         while index >= len(l):
