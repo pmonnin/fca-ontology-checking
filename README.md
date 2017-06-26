@@ -18,6 +18,12 @@ TODO
 
 * [Detailed documentation is available](documentation/latticeStatistics.md)
 
+### Lattice annotator
+
+TODO 
+
+* [Detailed documentation is available](documentation/latticeAnnotator.md)
+
 ## Dependencies
 
 * Python 3.6.1
@@ -30,10 +36,18 @@ In 23rd International Symposium on Methodologies for Intelligent Systems, ISMIS 
 
 ```bibtex
 @inproceedings{monnin2017using,
-  title={Using formal concept analysis for checking the structure of an ontology in LOD: the example of DBpedia},
-  author={Monnin, Pierre and Lezoche, Mario and Napoli, Amedeo and Coulet, Adrien},
-  booktitle={23rd International Symposium on Methodologies for Intelligent Systems, ISMIS 2017},
-  year={2017}
+  author    = {Pierre Monnin and
+               Mario Lezoche and
+               Amedeo Napoli and
+               Adrien Coulet},
+  title     = {Using Formal Concept Analysis for Checking the Structure of an Ontology
+               in {LOD:} The Example of DBpedia},
+  booktitle = {Foundations of Intelligent Systems - 23rd International Symposium,
+               {ISMIS} 2017, Warsaw, Poland, June 26-29, 2017, Proceedings},
+  pages     = {674--683},
+  year      = {2017},
+  url       = {https://doi.org/10.1007/978-3-319-60438-1_66},
+  doi       = {10.1007/978-3-319-60438-1_66}
 }
 ```
 
