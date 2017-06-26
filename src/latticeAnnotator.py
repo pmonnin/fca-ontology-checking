@@ -52,7 +52,8 @@ def main():
             axioms = lattice_ontology.compare_with(ontology)
             AxiomsSaver.save_axioms(axioms, ontology, sys.argv[3])
             print("Computing annotation statistics")
-            statistics = AnnotationStatistics.compute_statistics(ontology, lattice_ontology, annotated_lattice, axioms)
+            statistics = AnnotationStatistics.compute_statistics(ontology, lattice_ontology, annotated_lattice, axioms,
+                                                                 classes_per_object)
             StatisticsSaver.save_statistics(statistics, sys.argv[4])
 
         except KeyError as e:

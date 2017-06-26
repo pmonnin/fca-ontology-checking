@@ -6,7 +6,7 @@ class AnnotationStatistics:
         pass
 
     @staticmethod
-    def compute_statistics(data_ontology, lattice_ontology, annotated_lattice, axioms):
+    def compute_statistics(data_ontology, lattice_ontology, annotated_lattice, axioms, classes_per_object):
         statistics = {
                         'data-ontology-statistics': data_ontology.get_statistics(),
                         'lattice-ontology-statistics': lattice_ontology.get_statistics(),
@@ -41,5 +41,26 @@ class AnnotationStatistics:
                     found_axioms += 1
 
             total_axioms += len(axioms_ontology[i])
+        statistics["found-existing-axioms"] = found_axioms
+        statistics["expected-existing-axioms"] = total_axioms
+
+        common_classes = set(classes_per_object[0])
+        for i in range(1, len(classes_per_object)):
+            common_classes = common_classes & set(classes_per_object[i])
+        statistics["common-classes"] = len(common_classes)
+
+        if len(common_classes) != 0:
+            corr_found_axioms = 0
+            corr_total_axioms = 0
+
+            for i in range(0, len(lattice_ontology._index_to_class)):
+                if i not in common_classes:
+                    for j in axioms_lattice[i]:
+                        if j in axioms_ontology[i]:
+                            corr_found_axioms += 1
+
+                    corr_total_axioms += len(axioms_ontology[i])
+            statistics["corrected-found-existing-axioms"] = corr_found_axioms
+            statistics["corrected-expected-existing-axioms"] = corr_total_axioms
 
         return statistics
