@@ -10,7 +10,7 @@ class OntologyFromObjectsFactory:
         pass
 
     @staticmethod
-    def build_factory_from_objects(lattice, server_manager, configuration):
+    def build_ontology_from_objects(lattice, server_manager, configuration):
         class_to_index = {}
         index_to_class = []
         class_parents = []

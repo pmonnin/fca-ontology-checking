@@ -38,8 +38,8 @@ def main():
             lattice = SofiaLatticeLoader.load_lattice(sys.argv[2])
             server_manager = ServerManager(conf)
             print("Querying associated ontology")
-            ontology, classes_per_object = OntologyFromObjectsFactory.build_factory_from_objects(lattice,
-                                                                                                 server_manager, conf)
+            ontology, classes_per_object = OntologyFromObjectsFactory.build_ontology_from_objects(lattice,
+                                                                                                  server_manager, conf)
             print("Annotating lattice")
             annotated_lattice = None
             if conf["reduce-lattice"]:
