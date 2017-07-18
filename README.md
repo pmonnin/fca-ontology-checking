@@ -54,6 +54,12 @@ In 23rd International Symposium on Methodologies for Intelligent Systems, ISMIS 
 }
 ```
 
+## History
+
+See:
+
+* ``BDA-2017`` tag / release identifies the Python scripts used for the article submitted to BDA 2017
+
 ## Contributors
 
 [Pierre Monnin](https://pmonnin.github.io/)
