@@ -56,7 +56,7 @@ In 23rd International Symposium on Methodologies for Intelligent Systems, ISMIS 
 
 ## History
 
-See:
+As this work is still in progress, git tags are used to identify special versions of this work.
 
 * ``BDA-2017`` tag / release identifies the Python scripts used for the article submitted to BDA 2017
 
