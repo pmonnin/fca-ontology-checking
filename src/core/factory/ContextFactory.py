@@ -16,9 +16,9 @@ class ContextFactory:
             object_uri = object_json["object"]["value"]
 
             query_attributes = configuration_parameters["attributes-selection-prefix"] \
-                               + " select distinct ?attribute where { " \
-                               + configuration_parameters["attributes-selection-where-clause"] \
-                               + " VALUES ?object {<" + object_uri + ">} }"
+                + " select distinct ?attribute where { " \
+                + configuration_parameters["attributes-selection-where-clause"] \
+                + " VALUES ?object {<" + object_uri + ">} }"
 
             response_attribute = self._server_manager.query_server(query_attributes)
 

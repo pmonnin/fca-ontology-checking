@@ -25,8 +25,8 @@ class OntologyFromObjectsFactory:
             sys.stdout.flush()
 
             query = configuration["query-prefix"] + " select distinct ?class where { <" + o + "> " \
-                    + configuration["type-predicate"] + "/" + configuration["parent-predicate"] + "* ?class . " \
-                    + "FILTER(REGEX(STR(?class), \"" + configuration["ontology-base-uri"] + "\", \"i\")) . }"
+                + configuration["type-predicate"] + "/" + configuration["parent-predicate"] + "* ?class . " \
+                + "FILTER(REGEX(STR(?class), \"" + configuration["ontology-base-uri"] + "\", \"i\")) . }"
 
             response = server_manager.query_server(query)
 
@@ -55,8 +55,8 @@ class OntologyFromObjectsFactory:
             sys.stdout.flush()
 
             query = configuration["query-prefix"] + " select distinct ?parent where { <" + c + "> " \
-                    + configuration["parent-predicate"] + " ?parent . " \
-                    + "FILTER(REGEX(STR(?parent), \"" + configuration["ontology-base-uri"] + "\", \"i\")) . }"
+                + configuration["parent-predicate"] + " ?parent . " \
+                + "FILTER(REGEX(STR(?parent), \"" + configuration["ontology-base-uri"] + "\", \"i\")) . }"
 
             response = server_manager.query_server(query)
 

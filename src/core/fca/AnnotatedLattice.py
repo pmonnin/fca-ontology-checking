@@ -91,8 +91,15 @@ class AnnotatedLattice(Lattice):
                 self._children[i] = []
                 self._parents[i] = []
 
+        print("\rReducing lattice to closed annotated concepts 100 %\t\t")
+
         i = 0
+        count = 0
+        initial_length = len(self._concepts)
         while i < len(self._concepts):
+            sys.stdout.write("\rRemoving useless concepts %i %%\t\t" % (count * 100.0 / initial_length))
+            sys.stdout.flush()
+
             if len(self._concepts[i]["annotation"]) == 0:
                 self._concepts.remove(self._concepts[i])
                 del self._parents[i]
@@ -110,7 +117,9 @@ class AnnotatedLattice(Lattice):
             else:
                 i += 1
 
-        print("\rReducing lattice to closed annotated concepts 100 %\t\t")
+            count += 1
+
+        print("\rRemoving useless concepts 100 %\t\t")
 
     def __compute_ancestors__(self, concept_index):
         ancestors = list(self._parents[concept_index])

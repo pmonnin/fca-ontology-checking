@@ -111,6 +111,7 @@ class Ontology:
         statistics["cycles-number"] = len(statistics["cycles"])
         existing_cycles = statistics["cycles-number"] > 0
         print("\rComputing cycles 100 %\t\t")
+        statistics["classes-in-cycles"] = classes_seen_in_cycles.count(True)
 
         # Depth (one traversal if cycles exist in the ontology)
         depths = {}
