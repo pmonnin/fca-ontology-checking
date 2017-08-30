@@ -3,12 +3,12 @@ import json
 __author__ = "Pierre Monnin"
 
 
-class SofiaBinaryContextManager:
+class ContextManager:
     def __init__(self):
         pass
 
     @staticmethod
-    def save_context(context, file):
+    def save_2d_context_for_sofia(context, file):
         data = [
             {
                 "ObjNames": [],
@@ -39,3 +39,11 @@ class SofiaBinaryContextManager:
 
         with open(file, 'w') as file:
             json.dump(data, file)
+
+    @staticmethod
+    def save_3d_context_for_data_peeler(context, file):
+        with open(file, 'w') as file:
+            for obj in context.keys():
+                for attribute in context[obj].keys():
+                    for condition in context[obj][attribute]:
+                        file.write(obj + " " + attribute + " " + condition + "\n")
