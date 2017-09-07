@@ -15,8 +15,9 @@ def main():
     parser.add_argument("configuration", help="JSON file containing the necessary configuration parameters")
     parser.add_argument("output_context", help="JSON file where the generated SOFIA/DataPeeler context will be stored")
     parser.add_argument("output_statistics", help="JSON file where the statistics of the context will be stored")
-    parser.add_argument("-t", "--type", help="", choices=['2D-SubjectsPredicates', '2D-SubjectsPredicatesClasses',
-                                                          '3D-SubjectsPredicatesClasses'],
+    parser.add_argument("-t", "--type", help="Context type", choices=['2D-SubjectsPredicates',
+                                                                      '2D-SubjectsPredicatesClasses',
+                                                                      '3D-SubjectsPredicatesClasses'],
                         default="PagesPredicates")
     args = parser.parse_args()
 
