@@ -33,9 +33,9 @@ def main():
                 triconcept[d] = value.split(',')
 
             if len(triconcept[dimension]) == 1 and triconcept[dimension][0] == "ø":
-                context[i] = []
+                context[str(i)] = []
             else:
-                context[i] = list(triconcept[dimension])
+                context[str(i)] = list(triconcept[dimension])
 
     ContextManager.save_2d_context_for_sofia(context, args.projection_context)
 
