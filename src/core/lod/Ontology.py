@@ -12,6 +12,9 @@ class Ontology:
         self._class_parents = class_parents
         self._class_children = class_children
 
+    def get_classes(self):
+        return list(self._index_to_class)
+
     def get_statistics(self):
         statistics = dict()
 

@@ -1,53 +1,140 @@
-import bisect
+import sys
 
 __author__ = "Pierre Monnin"
 
 
 class Lattice:
-    def __init__(self, sofia_lattice_json):
-        self._top = sofia_lattice_json[0]["Top"][0]
-        self._bottom = sofia_lattice_json[0]["Bottom"][0]
-        self._objects = []
-        self._attributes = []
-        self._concepts = []
-        self._parents = []
-        self._children = []
+    def __init__(self, concepts, objects, attributes, parents, children):
+        self._concepts = concepts
+        self._objects = objects
+        self._attributes = attributes
+        self._parents = parents
+        self._children = children
+        self._ontology_classes = None
 
-        # Concepts
-        for c in sofia_lattice_json[1]["Nodes"]:
-            concept = {"extent": [], "intent": []}
-
-            for i in range(0, len(c["Ext"]["Inds"])):
-                o = c["Ext"]["Inds"][i]
-                concept["extent"].append(o)
-                Lattice.__extend_list(self._objects, o, c["Ext"]["Names"][i], "")
-
-            if c["Int"] != "BOTTOM":
-                for i in range(0, len(c["Int"]["Inds"])):
-                    a = c["Int"]["Inds"][i]
-                    concept["intent"].append(a)
-                    Lattice.__extend_list(self._attributes, a, c["Int"]["Names"][i], "")
-
-            self._concepts.append(concept)
-
-        # Arcs
         for i in range(0, len(self._concepts)):
-            self._parents.append([])
-            self._children.append([])
+            if len(self._parents[i]) == 0:
+                self._top = i
 
-        for a in sofia_lattice_json[2]["Arcs"]:
-            bisect.insort_left(self._children[a["S"]], a["D"])
-            bisect.insort_left(self._parents[a["D"]], a["S"])
+            if len(self._children[i]) == 0:
+                self._bottom = i
 
     def get_top_index(self):
         return self._top
 
+    def get_bottom_index(self):
+        return self._bottom
+
+    def get_parents(self, concept_index):
+        return self._parents[concept_index].copy()
+
     def get_children(self, concept_index):
-        return list(self._children[concept_index])
+        return self._children[concept_index].copy()
 
-    @staticmethod
-    def __extend_list(l, index, element, default_element):
-        while index >= len(l):
-            l.append(default_element)
+    def get_objects(self):
+        return self._objects.copy()
 
-        l[index] = element
+    def get_attributes(self):
+        return self._attributes.copy()
+
+    def get_ontology_classes(self):
+        return self._ontology_classes.copy()
+
+    def get_concepts(self):
+        return self._concepts.copy()
+
+    def get_number_of_empty_annotations(self):
+        ret_val = 0
+
+        for c in self._concepts:
+            if len(c["annotation-r"]) == 0:
+                ret_val += 1
+
+        return ret_val
+
+    def annotate(self, classes_per_objects, ontology):
+        self._ontology_classes = ontology.get_classes()
+
+        for i, c in enumerate(self._concepts):
+            sys.stdout.write("\rAnnotating concepts %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            c["annotation-r"] = set()
+            if len(c["extent"]) != 0:
+                c["annotation-r"] = set(classes_per_objects[c["extent"][0]])
+
+                for j in range(1, len(c["extent"])):
+                    c["annotation-r"] = c["annotation-r"] & set(classes_per_objects[c["extent"][j]])
+
+        print("\rAnnotating concepts 100 %\t\t")
+
+        reduced_annotations = []
+        for i, c in enumerate(self._concepts):
+            sys.stdout.write("\rComputing reduced notation of concepts annotations %i %%\t\t" %
+                             (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            reduced_annotations.append(c["annotation-r"].copy())
+            for p in self._parents[i]:
+                reduced_annotations[i] -= self._concepts[p]["annotation-r"]
+
+        print("\rComputing reduced notation of concepts annotations 100 %\t\t")
+
+        for i, c in enumerate(self._concepts):
+            sys.stdout.write("\rSaving reduced notation of concepts annotations %i %%\t\t" %
+                             (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+            c["annotation-r"] = list(reduced_annotations[i])
+
+        print("\rSaving reduced notation of concepts annotations 100 %\t\t")
+
+    def reduce_to_annotated_concepts(self):
+        parents = []
+        children = []
+        for i in range(0, len(self._concepts)):
+            sys.stdout.write("\rPreparing lattice reduction %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            current_parents = {}
+            for parent in self._parents[i]:
+                current_parents[parent] = True
+
+            current_children = {}
+            for child in self._children[i]:
+                current_children[child] = True
+
+            parents.append(current_parents)
+            children.append(current_children)
+
+        print("\rPreparing lattice reduction 100 %\t\t")
+
+        for i, c in enumerate(self._concepts):
+            sys.stdout.write("\rReducing lattice to annotated concepts %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            if len(c["annotation-r"]) == 0:
+                for parent in parents[i]:
+                    del(children[parent][i])
+
+                    for child in children[i]:
+                        children[parent][child] = True
+                        parents[child][parent] = True
+
+                for child in children[i]:
+                    del(parents[child][i])
+
+                parents[i] = {}
+                children[i] = {}
+
+        print("\rReducing lattice to annotated concepts 100 %\t\t")
+
+        for i in range(0, len(self._concepts)):
+            sys.stdout.write("\rSaving new concepts subsumptions %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            self._parents[i] = list(parents[i].keys())
+            self._children[i] = list(children[i].keys())
+
+        print("\rSaving new concepts subsumptions 100 %\t\t")
+
+        # TODO Useless concepts could be deleted to save space

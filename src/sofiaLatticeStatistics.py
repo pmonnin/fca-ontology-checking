@@ -1,6 +1,6 @@
 import argparse
 
-from core.io.SofiaLatticeLoader import SofiaLatticeLoader
+from core.io.LatticeManager import LatticeManager
 from core.io.StatisticsSaver import StatisticsSaver
 from core.statistics.LatticeStatistics import LatticeStatistics
 
@@ -14,9 +14,10 @@ def main():
     args = parser.parse_args()
 
     print("SOFIA Lattice statistics")
-    lattice = SofiaLatticeLoader.load_lattice(args.lattice)
+    lattice = LatticeManager.load_2d_sofia_lattice(args.lattice)
     statistics = LatticeStatistics.compute_statistics(lattice)
     StatisticsSaver.save_statistics(statistics, args.statistics)
+
 
 if __name__ == '__main__':
     main()
