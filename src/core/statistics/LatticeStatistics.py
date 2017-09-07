@@ -8,13 +8,9 @@ class LatticeStatistics:
         pass
 
     @staticmethod
-    def compute_statistics(lattice):
+    def compute_statistics_2d_lattice(lattice):
         # Concepts count
-        statistics = {'concepts-count': len(lattice._concepts), 'arcs-count': 0, 'depth': 0}
-
-        # Arcs count
-        for parents in lattice._parents:
-            statistics['arcs-count'] += len(parents)
+        statistics = {'concepts-count': len(lattice.get_concepts()), 'arcs-count': lattice.get_arcs_count(), 'depth': 0}
 
         # Depth
         q = Queue()
@@ -34,5 +30,13 @@ class LatticeStatistics:
 
                 if depth[child_index] > statistics['depth']:
                     statistics['depth'] = depth[child_index]
+
+        return statistics
+
+    @staticmethod
+    def compute_statistics_annotated_lattice(lattice):
+        statistics = LatticeStatistics.compute_statistics_2d_lattice(lattice)
+
+        statistics["empty-annotation"] = lattice.get_empty_annotations_count()
 
         return statistics

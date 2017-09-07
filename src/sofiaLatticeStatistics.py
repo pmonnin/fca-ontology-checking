@@ -15,7 +15,7 @@ def main():
 
     print("SOFIA Lattice statistics")
     lattice = LatticeManager.load_2d_sofia_lattice(args.lattice)
-    statistics = LatticeStatistics.compute_statistics(lattice)
+    statistics = LatticeStatistics.compute_statistics_2d_lattice(lattice)
     StatisticsSaver.save_statistics(statistics, args.statistics)
 
 

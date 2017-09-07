@@ -5,7 +5,7 @@ from core.io.ConfigurationLoader import ConfigurationLoader
 from core.io.LatticeManager import LatticeManager
 from core.io.ServerManager import ServerManager
 from core.io.StatisticsSaver import StatisticsSaver
-from core.statistics.AnnotationStatistics import AnnotationStatistics
+from core.statistics.LatticeStatistics import LatticeStatistics
 
 __author__ = "Pierre Monnin"
 
@@ -46,7 +46,7 @@ def main():
         if conf["reduce-lattice"]:
             lattice.reduce_to_annotated_concepts()
         print("Computing statistics")
-        statistics = AnnotationStatistics .compute_statistics(lattice)
+        statistics = LatticeStatistics.compute_statistics_annotated_lattice(lattice)
         print("Saving annotated lattice")
         LatticeManager.save_annotated_lattice(args.output, lattice)
         print("Saving statistics")

@@ -43,7 +43,13 @@ class Lattice:
     def get_concepts(self):
         return self._concepts.copy()
 
-    def get_number_of_empty_annotations(self):
+    def get_arcs_count(self):
+        ret_val = 0
+        for i in self._parents:
+            ret_val += len(i)
+        return ret_val
+
+    def get_empty_annotations_count(self):
         ret_val = 0
 
         for c in self._concepts:
