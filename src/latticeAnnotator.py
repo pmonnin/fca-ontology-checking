@@ -40,7 +40,7 @@ def main():
         server_manager = ServerManager(conf)
         print("Querying associated ontology")
         ontology_factory = OntologyFactory(server_manager)
-        ontology, classes_per_object = ontology_factory.build_ontology_from_lattice_objects(lattice, conf)
+        ontology, classes_per_object = ontology_factory.build_ontology_from_objects(lattice.get_objects(), conf)
         print("Annotating lattice")
         lattice.annotate(classes_per_object, ontology)
         if conf["reduce-lattice"]:

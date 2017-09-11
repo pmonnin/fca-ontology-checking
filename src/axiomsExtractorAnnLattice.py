@@ -41,7 +41,7 @@ def main():
         print("Querying associated ontology")
         server_manager = ServerManager(conf)
         ontology_factory = OntologyFactory(server_manager)
-        ontology, classes_per_objects = ontology_factory.build_ontology_from_lattice_objects(lattice, conf)
+        ontology, classes_per_objects = ontology_factory.build_ontology_from_objects(lattice.get_objects(), conf)
         print("Computing ontology associated to the annotated lattice")
         ontology_lattice = lattice.get_ontology_from_annotations()
         print("Comparing the two ontologies")

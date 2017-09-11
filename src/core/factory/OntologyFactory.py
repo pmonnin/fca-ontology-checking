@@ -10,7 +10,7 @@ class OntologyFactory:
     def __init__(self, server_manager):
         self._server_manager = server_manager
 
-    def build_ontology_from_lattice_objects(self, lattice, configuration):
+    def build_ontology_from_objects(self, objects, configuration):
         class_to_index = {}
         index_to_class = []
         class_parents = []
@@ -18,10 +18,9 @@ class OntologyFactory:
         classes_per_object = []
 
         # Query the whole set of classes linked to the objects
-        lattice_objects = lattice.get_objects()
-        for i, o in enumerate(lattice_objects):
+        for i, o in enumerate(objects):
             classes_per_object.append([])
-            sys.stdout.write("\rQuerying associated ontology classes %i %%\t\t" % (i * 100.0 / len(lattice_objects)))
+            sys.stdout.write("\rQuerying associated ontology classes %i %%\t\t" % (i * 100.0 / len(objects)))
             sys.stdout.flush()
 
             query = configuration["query-prefix"] + " select distinct ?class where { <" + o + "> " \
