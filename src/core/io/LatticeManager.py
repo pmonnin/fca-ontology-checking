@@ -73,3 +73,25 @@ class LatticeManager:
                 json_lattice["children"].append(lattice.get_children(i))
 
             json.dump(json_lattice, file)
+
+    @staticmethod
+    def load_annotated_lattice(file_path):
+        with open(file_path, 'r', encoding="utf-8") as file:
+            json_lattice = json.loads(file.read())
+
+            objects = json_lattice["objects"]
+            attributes = json_lattice["attributes"]
+            ontology_classes = json_lattice["ontology_classes"]
+            concepts = []
+            parents = json_lattice["parents"]
+            children = json_lattice["children"]
+
+            for c_json in json_lattice["concepts"]:
+                concept = {"extent": c_json["extent"], "intent": [], "annotation-r": c_json["annotation-r"]}
+
+                if c_json["intent"] != "BOTTOM":
+                    concept["intent"] = c_json["intent"]
+
+                concepts.append(concept)
+
+            return Lattice(concepts, objects, attributes, parents, children, ontology_classes)

@@ -1,16 +1,18 @@
 import sys
 
+from core.lod.Ontology import Ontology
+
 __author__ = "Pierre Monnin"
 
 
 class Lattice:
-    def __init__(self, concepts, objects, attributes, parents, children):
+    def __init__(self, concepts, objects, attributes, parents, children, ontology_classes=None):
         self._concepts = concepts
         self._objects = objects
         self._attributes = attributes
         self._parents = parents
         self._children = children
-        self._ontology_classes = None
+        self._ontology_classes = ontology_classes
 
         for i in range(0, len(self._concepts)):
             if len(self._parents[i]) == 0:
@@ -144,3 +146,34 @@ class Lattice:
         print("\rSaving new concepts subsumptions 100 %\t\t")
 
         # TODO Useless concepts could be deleted to save space
+
+    def get_ontology_from_annotations(self):
+        index_to_class = self._ontology_classes
+        class_to_index = {}
+        class_parents = []
+        class_children = []
+
+        for i, c in enumerate(index_to_class):
+            class_to_index[c] = i
+            class_parents.append({})
+            class_children.append({})
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rExtracting ontology from annotated lattice %i %%\t\t" %
+                             (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            if len(concept["annotation-r"]) != 0:
+                for p in self._parents[i]:
+                    for ontology_class_parent in self._concepts[p]["annotation-r"]:
+                        for ontology_class in concept["annotation-r"]:
+                            class_parents[ontology_class][ontology_class_parent] = True
+                            class_children[ontology_class_parent][ontology_class] = True
+
+        print("\rExtracting ontology from annotated lattice 100 %\t\t")
+
+        for i in range(0, len(index_to_class)):
+            class_parents[i] = list(class_parents[i].keys())
+            class_children[i] = list(class_children[i].keys())
+
+        return Ontology(class_to_index, index_to_class, class_parents, class_children)
