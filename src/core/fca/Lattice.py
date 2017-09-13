@@ -177,3 +177,90 @@ class Lattice:
             class_children[i] = list(class_children[i].keys())
 
         return Ontology(class_to_index, index_to_class, class_parents, class_children)
+
+    def get_ontology_from_mixed_intents(self, ontology, ontology_base_uri):
+        # Concepts additional information
+        ontological_intents = []
+        reduced_ontological_intents = []
+        concepts_parents = []
+        concepts_children = []
+
+        # Ontology information
+        index_to_class = ontology.get_classes()
+        class_to_index = {}
+        class_parents = []
+        class_children = []
+        for i, ontology_class in enumerate(index_to_class):
+            class_to_index[ontology_class] = i
+            class_parents.append({})
+            class_children.append({})
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rComputing ontological intent %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            ontological_intents.append(set())
+
+            for a in concept["intent"]:
+                if self._attributes[a].startswith(ontology_base_uri):
+                    ontological_intents[i].add(self._attributes[a])
+
+            concepts_parents.append({})
+            concepts_children.append({})
+            for parent in self._parents[i]:
+                concepts_parents[i][parent] = True
+            for child in self._children[i]:
+                concepts_children[i][child] = True
+
+        print("\rComputing ontological intent 100 %\t\t")
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rComputing reduced ontological intent %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            reduced_ontological_intents.append(ontological_intents[i].copy())
+
+            for parent in concepts_parents[i]:
+                reduced_ontological_intents[i] -= ontological_intents[parent]
+
+        print("\rComputing reduced ontological intent 100 %\t\t")
+
+        for i, c in enumerate(self._concepts):
+            sys.stdout.write("\rReducing lattice to ontological intent %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            if len(reduced_ontological_intents[i]) == 0:
+                for parent in concepts_parents[i]:
+                    del(concepts_children[parent][i])
+
+                    for child in concepts_children[i]:
+                        concepts_children[parent][child] = True
+                        concepts_parents[child][parent] = True
+
+                for child in concepts_children[i]:
+                    del(concepts_parents[child][i])
+
+                concepts_parents[i] = {}
+                concepts_children[i] = {}
+
+        print("\rReducing lattice to ontological intent 100 %\t\t")
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rExtracting ontology from ontological intents of lattice %i %%\t\t" %
+                             (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            if len(reduced_ontological_intents[i]) != 0:
+                for parent in concepts_parents[i]:
+                    for ontology_class in reduced_ontological_intents[i]:
+                        for ontology_class_parent in reduced_ontological_intents[parent]:
+                            class_parents[class_to_index[ontology_class]][class_to_index[ontology_class_parent]] = True
+                            class_children[class_to_index[ontology_class_parent]][class_to_index[ontology_class]] = True
+
+        print("\rExtracting ontology from ontological intents of lattice 100 %\t\t")
+
+        for i in range(0, len(class_parents)):
+            class_parents[i] = list(class_parents[i].keys())
+            class_children[i] = list(class_children[i].keys())
+
+        return Ontology(class_to_index, index_to_class, class_parents, class_children)
