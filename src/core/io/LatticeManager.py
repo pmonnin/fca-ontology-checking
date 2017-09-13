@@ -20,6 +20,7 @@ class LatticeManager:
             concepts = []
             parents = []
             children = []
+            bottom = None
 
             # Concepts
             for c in sofia_lattice_json[1]["Nodes"]:
@@ -35,8 +36,11 @@ class LatticeManager:
                         a = c["Int"]["Inds"][i]
                         concept["intent"].append(a)
                         LatticeManager.__extend_list(attributes, a, c["Int"]["Names"][i], "")
+                else:
+                    bottom = concept
 
                 concepts.append(concept)
+            bottom["intent"] = list(range(0, len(attributes)))
 
             # Arcs
             for i in range(0, len(concepts)):
