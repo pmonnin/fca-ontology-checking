@@ -25,11 +25,18 @@ class ContextStatistics:
 
         attributes = []
         conditions = []
+        hidden_objects = {}
 
         for obj in context.keys():
+            if len(context[obj].keys()) == 0:
+                hidden_objects[obj] = True
+
             for attribute in context[obj].keys():
                 if attribute not in attributes:
                     attributes.append(attribute)
+
+                if len(context[obj][attribute]) == 0:
+                    hidden_objects[obj] = True
 
                 for condition in context[obj][attribute]:
                     if condition not in conditions:
@@ -39,4 +46,5 @@ class ContextStatistics:
 
         statistics["attributes-number"] = len(attributes)
         statistics["conditions-number"] = len(conditions)
+        statistics["hidden-objects-count"] = len(hidden_objects)
         return statistics
