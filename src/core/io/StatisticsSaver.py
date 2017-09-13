@@ -10,4 +10,4 @@ class StatisticsSaver:
     @staticmethod
     def save_statistics(statistics, file_path):
         with open(file_path, 'w') as file:
-            json.dump(statistics, file)
+            json.dump(statistics, file, indent=4)
