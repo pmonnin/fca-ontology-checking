@@ -254,8 +254,11 @@ class Lattice:
                 for parent in concepts_parents[i]:
                     for ontology_class in reduced_ontological_intents[i]:
                         for ontology_class_parent in reduced_ontological_intents[parent]:
-                            class_parents[class_to_index[ontology_class]][class_to_index[ontology_class_parent]] = True
-                            class_children[class_to_index[ontology_class_parent]][class_to_index[ontology_class]] = True
+                            if ontology_class in class_to_index and ontology_class_parent in class_to_index:
+                                class_parents[class_to_index[ontology_class]][class_to_index[ontology_class_parent]] = \
+                                    True
+                                class_children[class_to_index[ontology_class_parent]][class_to_index[ontology_class]] = \
+                                    True
 
         print("\rExtracting ontology from ontological intents of lattice 100 %\t\t")
 
