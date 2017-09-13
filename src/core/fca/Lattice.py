@@ -257,10 +257,92 @@ class Lattice:
                             if ontology_class in class_to_index and ontology_class_parent in class_to_index:
                                 class_parents[class_to_index[ontology_class]][class_to_index[ontology_class_parent]] = \
                                     True
-                                class_children[class_to_index[ontology_class_parent]][class_to_index[ontology_class]] = \
-                                    True
+                                class_children[class_to_index[ontology_class_parent]][class_to_index[ontology_class]] \
+                                    = True
 
         print("\rExtracting ontology from ontological intents of lattice 100 %\t\t")
+
+        for i in range(0, len(class_parents)):
+            class_parents[i] = list(class_parents[i].keys())
+            class_children[i] = list(class_children[i].keys())
+
+        return Ontology(class_to_index, index_to_class, class_parents, class_children)
+
+    def get_ontology_from_projection_lattice_intents(self, ontology):
+        # Ontology information
+        index_to_class = ontology.get_classes()
+        class_to_index = {}
+        class_parents = []
+        class_children = []
+        for i, ontology_class in enumerate(index_to_class):
+            class_to_index[ontology_class] = i
+            class_parents.append({})
+            class_children.append({})
+
+        # Concepts additional information
+        reduced_intents = []
+        concepts_parents = []
+        concepts_children = []
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rComputing reduced intents %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            reduced_intents.append(set(concept["intent"]))
+            concepts_parents.append({})
+            concepts_children.append({})
+
+            for parent in self._parents[i]:
+                concepts_parents[i][parent] = True
+                reduced_intents[i] -= set(self._concepts[parent]["intent"])
+
+            for child in self._children[i]:
+                concepts_children[i][child] = True
+
+        print("\rComputing reduced intents 100 %\t\t")
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rReducing lattice %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            if len(reduced_intents[i]) == 0:
+                for parent in concepts_parents[i]:
+                    del(concepts_children[parent][i])
+
+                    for child in concepts_children[i]:
+                        concepts_parents[child][parent] = True
+                        concepts_children[parent][child] = True
+
+                for child in concepts_children[i]:
+                    del(concepts_parents[child][i])
+
+                concepts_parents[i] = {}
+                concepts_children[i] = {}
+
+        print("\rReducing lattice 100 %\t\t")
+
+        for i, concept in enumerate(self._concepts):
+            sys.stdout.write("\rExtracting ontology from lattice %i %%\t\t" % (i * 100.0 / len(self._concepts)))
+            sys.stdout.flush()
+
+            # Length of extent should be > 0 otherwise there is no triconcept corresponding to this projection
+            if len(concept["extent"]) != 0 and len(reduced_intents[i]) != 0:
+                for parent in concepts_parents[i]:
+                    for ontology_class_index in reduced_intents[i]:
+                        for ontology_class_parent_index in reduced_intents[parent]:
+                            ontology_class = self._attributes[ontology_class_index]
+                            ontology_class_parent = self._attributes[ontology_class_parent_index]
+
+                            if ontology_class in class_to_index and ontology_class_parent in class_to_index:
+                                class_index = class_to_index[ontology_class]
+                                parent_index = class_to_index[ontology_class_parent]
+
+                                class_parents[class_index][parent_index] = True
+                                class_children[parent_index][class_index] = True
+                            else:
+                                print("Error: classes not found: " + ontology_class + " " + ontology_class_parent)
+
+        print("\rExtracting ontology from lattice 100 %\t\t")
 
         for i in range(0, len(class_parents)):
             class_parents[i] = list(class_parents[i].keys())
