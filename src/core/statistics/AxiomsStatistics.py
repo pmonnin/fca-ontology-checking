@@ -28,14 +28,16 @@ class AxiomsStatistics:
 
         lattice_ontology_axioms = lattice_ontology.compute_all_axioms()
         ontology_axioms = ontology.compute_all_axioms()
-        statistics["found-axioms"] = 0
-        statistics["expected-axioms"] = 0
+        statistics["common-axioms"] = 0
+        statistics["lattice-axioms"] = 0
+        statistics["ontology-axioms"] = 0
 
         for i in range(0, len(lattice_ontology_axioms)):
             if i not in common_classes:  # Axioms cannot be expected to be found for common_classes as they're at top
-                statistics["expected-axioms"] += len(ontology_axioms[i])
+                statistics["ontology-axioms"] += len(ontology_axioms[i])
+                statistics["lattice-axioms"] += len(lattice_ontology_axioms[i])
                 for j in lattice_ontology_axioms[i]:
                     if j in ontology_axioms[i]:
-                        statistics["found-axioms"] += 1
+                        statistics["common-axioms"] += 1
 
         return statistics
