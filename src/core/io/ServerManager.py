@@ -1,3 +1,4 @@
+import urllib.error
 import urllib.parse
 import urllib.request
 import json
@@ -23,5 +24,17 @@ class ServerManager:
             self.query_attribute: query
         }
 
-        content = urllib.request.urlopen(self.server_address + "?" + urllib.parse.urlencode(query_parameters))
+        done = False
+        content = None
+        while not done:
+            try:
+                content = urllib.request.urlopen(self.server_address + "?" + urllib.parse.urlencode(query_parameters))
+                done = True
+            except urllib.error.HTTPError as e:
+                print("\rHTTP error " + str(e.getcode()))
+                if e.getcode() == 404:
+                    print("New try")
+                else:
+                    done = True
+
         return json.loads(content.read())
