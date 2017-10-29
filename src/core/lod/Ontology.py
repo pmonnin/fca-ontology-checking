@@ -126,6 +126,7 @@ class Ontology:
         # Cycles computation (only from classes in cycles)
         # First, we save the number of classes in cycles
         statistics["classes-in-cycles"] = classes_seen_in_cycles.count(True)
+        statistics["classes-in-cycles-list"] = [self._index_to_class[i] for i, t in enumerate(classes_seen_in_cycles) if t]
         if cycles_computation:
             # Cycles are computed
             index_cycles = []
