@@ -2,12 +2,35 @@
 
 ## Purpose
 
-This program builds a SOFIA context from a set of queries to select objects and their associated 
-attributes. Statistics are computed on this context.
+This program builds a context from a set of queries.
+This context can either be a SOFIA context (2 dimensional) of a context for DataPeeler (tri-context). 
+Statistics are computed on this context. 
+
+## Execution
+
+This program can be executed with:
+
+```bash
+python contextCreation.py configuration output_context output_statistics [-t | --type]
+```
+
+with:
+
+* _configuration_: JSON file containing the necessary configuration parameters
+* _context.json_: file where the generated SOFIA/DataPeeler context will be stored
+* _statistics.json_: JSON file where the statistics of the context will be stored
+* _-t | --type_: type of the context to build:
+    * _2D-SubjectsPredicates_: SOFIA (2D) context with subjects as objects and predicates as attributes (to be used with
+    concept annotation)
+    * _2D-SubjectsPredicatesClasses_: SOFIA (2D) context with subjects as objects and predicates and ontology classes 
+    as attributes
+    * _3D-SubjectsPredicatesClasses_: DataPeeler (3D) context with subjects as objects, predicates as attributes and 
+    ontology classes as conditions
+
 
 ## Configuration
 
-[A configuration example is available](../examples/conf-context-creation.json). It contains:
+A JSON file is used to configure this program:
 
 ```json
 {
@@ -21,7 +44,11 @@ attributes. Statistics are computed on this context.
   "objects-selection-prefix": "",
   "objects-selection-where-clause": "",
   "attributes-selection-prefix": "",
-  "attributes-selection-where-clause": ""
+  "attributes-selection-where-clause": "",
+  "ontology-type-predicate": "rdf:type",
+  "ontology-parent-predicate": "rdfs:subClassOf",
+  "ontology-query-prefix": "",
+  "ontology-base-uri": "http://dbpedia.org/ontology/"
 }
 ```
 
@@ -38,6 +65,15 @@ with:
 * _objects-selection-where-clause_: where clause used in the query to select objects -- see next paragraphs
 * _attributes-selection-prefix_: prefixes used in the query to select attributes -- see next paragraphs
 * _attributes-selection-where-clause_: where clause used in the query to select attributes -- see next paragraphs
+
+Only available for _2D-SubjectsPredicatesClasses_ or _3D-SubjectsPredicatesClasses_:
+
+* _ontology-type-predicate_: predicate used to type subjects with an ontology class -- see next paragraphs
+* _ontology-parent-predicate_: predicate used to express subsumption axioms in the considered ontology -- see next 
+paragraphs
+* _ontology-query-prefix_: prefixes used in the queries associated with the ontology classes selection -- see next 
+paragraphs
+* _ontology-base-uri_: base URI for ontology classes -- see next paragraphs
 
 ## SPARQL queries
 
@@ -67,16 +103,15 @@ select distinct ?attribute where {
 }
 ```
 
-## Execution
+### Selection of ontology classes
 
-This program can be executed with:
+For each object, identified by its ``object_uri``:
 
-```shell
-python contextCreation.py conf-context-creation.json context.json statistics.json
+```sparql
+("ontology-query-prefix")
+
+select distinct ?class where {
+    <object_uri> ("ontology-type-predicate")/("ontology-parent-predicate")* ?class .
+    FILTER(REGEX(STR(?class), "(ontology-base-uri)", "i")) .
+}
 ```
-
-with:
-
-* _conf-context-creation.json_: path to the configuration file -- see previous paragraphs
-* _context.json_: SOFIA context built from the configuration and the executed SPARQL queries
-* _statistics.json_: Name of the file where the statistics of the context will be stored
