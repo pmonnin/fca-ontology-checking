@@ -13,12 +13,12 @@ __author__ = "Pierre Monnin"
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("configuration", help="JSON file containing the necessary configuration parameters")
-    parser.add_argument("output_context", help="JSON file where the generated SOFIA/DataPeeler context will be stored")
+    parser.add_argument("output_context", help="File where the generated SOFIA/DataPeeler context will be stored")
     parser.add_argument("output_statistics", help="JSON file where the statistics of the context will be stored")
     parser.add_argument("-t", "--type", help="Context type", choices=['2D-SubjectsPredicates',
                                                                       '2D-SubjectsPredicatesClasses',
                                                                       '3D-SubjectsPredicatesClasses'],
-                        default="PagesPredicates")
+                        default="2D-PagesPredicates")
     args = parser.parse_args()
 
     print("Context creation")
